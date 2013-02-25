@@ -105,7 +105,7 @@ You will only need the JS part if you have to react on font-size or layout chang
 			console.log(state);
 		});
 </script>
-~~
+~~~
 
 
 
