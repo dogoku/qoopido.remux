@@ -1,0 +1,32 @@
+{
+  "name": "qoopido.remux",
+  "title": "Qoopido REMux",
+  "description": "REM and JS based approach to responsive web design.",
+  "version": "2.0.1",
+  "homepage": "https://github.com/dlueth/qoopido.remux",
+  "author": {
+    "name": "Dirk Lüth",
+    "email": "info@qoopido.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dlueth/qoopido.remux.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dlueth/qoopido.remux/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php"
+    },
+    {
+      "type": "GPL",
+      "url": "http://www.gnu.org/copyleft/gpl.html"
+    }
+  ],
+  "dependencies": {
+    "qoopido.js": ">= 2.0.0"
+  },
+  "keywords": []
+}
