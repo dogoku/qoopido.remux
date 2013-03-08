@@ -1,9 +1,9 @@
 /*!
-* Qoopido REMux, an REM and JS based approach to responsive web design
+* Qoopido REMux: an REM and JS based approach to responsive web design
 *
 * Source:  Qoopido REMux
-* Version: 2.0.1
-* Date:    2013-02-25
+* Version: 2.0.2
+* Date:    2013-03-08
 * Author:  Dirk Lüth <info@qoopido.com>
 * Website: https://github.com/dlueth/qoopido.remux
 *
@@ -13,7 +13,6 @@
 *  - http://www.opensource.org/licenses/mit-license.php
 *  - http://www.gnu.org/copyleft/gpl.html
 */
-
 ;(function(definition, window, document, undefined) {
 	'use strict';
 
@@ -77,7 +76,7 @@
 
 	return {
 		create: function create() {
-			var instance = Object.create(this);
+			var instance = Object.create(this, Object.getOwnPropertyDescriptors(this));
 
 			if(instance._constructor) {
 				instance._constructor.apply(instance, arguments);
@@ -89,7 +88,7 @@
 		},
 		extend: function extend(properties) {
 			properties         = properties || {};
-			properties._parent = this;
+			properties._parent = Object.create(this, Object.getOwnPropertyDescriptors(this));
 
 			if(supportsEs5 === true) { // Primary version for ECMAScript 5 compatible browsers
 				return Object.create(this, Object.getOwnPropertyDescriptors(properties));
@@ -111,15 +110,16 @@
 ;(function(definition, window, document, undefined) {
 	'use strict';
 
-	var namespace  = 'qoopido',
-		name       = 'emitter',
-		initialize = function initialize() {
-			[].push.apply(arguments, [ window, document, undefined ]);
+	var namespace = 'qoopido',
+		name      = 'emitter';
 
-			window[namespace] = window[namespace] || { };
+	function initialize() {
+		[].push.apply(arguments, [ window, document, undefined ]);
 
-			return (window[namespace][name] = definition.apply(null, arguments));
-		};
+		window[namespace] = window[namespace] || { };
+
+		return (window[namespace][name] = definition.apply(null, arguments));
+	}
 
 	if(typeof define === 'function' && define.amd) {
 		define([ './base' ], initialize);
