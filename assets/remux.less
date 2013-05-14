@@ -2,14 +2,14 @@
 @remuxFallback: false;
 
 .remux(font-size, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		font-size: ~"@{value}px";
-		font-size: ~"@{processingRem}rem";
+		font-size: ~"@{value}";
+		font-size: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		font-size: ~"@{processingRem}rem";
+		font-size: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
@@ -18,136 +18,136 @@
 .remux(line-height, @value) {
 	// line-height with more than 6 decimal digits causes
 	// problems in Chrome (at least in version 23.0.1271.91)
-	@processingRem: ((round((@value / @fontsize-base) * 100000)) / 100000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 100000)) / 100000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		line-height: ~"@{value}px";
-		line-height: ~"@{processingRem}rem";
+		line-height: ~"@{value}";
+		line-height: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		line-height: ~"@{processingRem}rem";
+		line-height: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(left, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		left: ~"@{value}px";
-		left: ~"@{processingRem}rem";
+		left: ~"@{value}";
+		left: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		left: ~"@{processingRem}rem";
+		left: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(right, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		right: ~"@{value}px";
-		right: ~"@{processingRem}rem";
+		right: ~"@{value}";
+		right: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		right: ~"@{processingRem}rem";
+		right: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(top, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		top: ~"@{value}px";
-		top: ~"@{processingRem}rem";
+		top: ~"@{value}";
+		top: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		top: ~"@{processingRem}rem";
+		top: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(bottom, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		bottom: ~"@{value}px";
-		bottom: ~"@{processingRem}rem";
+		bottom: ~"@{value}";
+		bottom: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		bottom: ~"@{processingRem}rem";
+		bottom: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(width, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		width: ~"@{value}px";
-		width: ~"@{processingRem}rem";
+		width: ~"@{value}";
+		width: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		width: ~"@{processingRem}rem";
+		width: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(min-width, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		min-width: ~"@{value}px";
-		min-width: ~"@{processingRem}rem";
+		min-width: ~"@{value}";
+		min-width: ~"@{processingRem}";
 		width: auto !important;
-		width: ~"@{value}px";
-		width: ~"@{processingRem}rem";
+		width: ~"@{value}";
+		width: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		min-width: ~"@{processingRem}rem";
+		min-width: ~"@{processingRem}";
 		width: auto !important;
-		width: ~"@{processingRem}rem";
+		width: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(height, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		height: ~"@{value}px";
-		height: ~"@{processingRem}rem";
+		height: ~"@{value}";
+		height: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		height: ~"@{processingRem}rem";
+		height: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(min-height, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		min-height: ~"@{value}px";
-		min-height: ~"@{processingRem}rem";
+		min-height: ~"@{value}";
+		min-height: ~"@{processingRem}";
 		height: auto !important;
-		height: ~"@{value}px";
-		height: ~"@{processingRem}rem";
+		height: ~"@{value}";
+		height: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		min-height: ~"@{processingRem}rem";
+		min-height: ~"@{processingRem}";
 		height: auto !important;
-		height: ~"@{processingRem}rem";
+		height: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
@@ -168,56 +168,56 @@
 }
 
 .remux(margin-top, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		margin-top: ~"@{value}px";
-		margin-top: ~"@{processingRem}rem";
+		margin-top: ~"@{value}";
+		margin-top: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		margin-top: ~"@{processingRem}rem";
+		margin-top: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(margin-right, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		margin-right: ~"@{value}px";
-		margin-right: ~"@{processingRem}rem";
+		margin-right: ~"@{value}";
+		margin-right: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		margin-right: ~"@{processingRem}rem";
+		margin-right: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(margin-bottom, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		margin-bottom: ~"@{value}px";
-		margin-bottom: ~"@{processingRem}rem";
+		margin-bottom: ~"@{value}";
+		margin-bottom: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		margin-bottom: ~"@{processingRem}rem";
+		margin-bottom: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(margin-left, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		margin-left: ~"@{value}px";
-		margin-left: ~"@{processingRem}rem";
+		margin-left: ~"@{value}";
+		margin-left: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		margin-left: ~"@{processingRem}rem";
+		margin-left: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
@@ -238,56 +238,56 @@
 }
 
 .remux(padding-top, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		padding-top: ~"@{value}px";
-		padding-top: ~"@{processingRem}rem";
+		padding-top: ~"@{value}";
+		padding-top: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		padding-top: ~"@{processingRem}rem";
+		padding-top: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(padding-right, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		padding-right: ~"@{value}px";
-		padding-right: ~"@{processingRem}rem";
+		padding-right: ~"@{value}";
+		padding-right: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		padding-right: ~"@{processingRem}rem";
+		padding-right: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(padding-bottom, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		padding-bottom: ~"@{value}px";
-		padding-bottom: ~"@{processingRem}rem";
+		padding-bottom: ~"@{value}";
+		padding-bottom: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		padding-bottom: ~"@{processingRem}rem";
+		padding-bottom: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);
 }
 
 .remux(padding-left, @value) {
-	@processingRem: ((round((@value / @fontsize-base) * 10000000)) / 10000000);
+	@processingRem: ~`(function() { var base = parseFloat("@{remuxFontsize}"); return "@{value}".replace(/[\[\]]/g, '').replace(/([0-9]*[.]{0,1}[0-9]*px)/gi, function() { return ((Math.round((parseFloat(arguments[0]) / base) * 10000000)) / 10000000) + 'rem'; }); }())`;
 
 	.result(@value, @fallback) when (@fallback = true) {
-		padding-left: ~"@{value}px";
-		padding-left: ~"@{processingRem}rem";
+		padding-left: ~"@{value}";
+		padding-left: ~"@{processingRem}";
 	}
 	.result(@value, @fallback) when (@fallback = false) {
-		padding-left: ~"@{processingRem}rem";
+		padding-left: ~"@{processingRem}";
 	}
 
 	.result(@value, @remuxFallback);

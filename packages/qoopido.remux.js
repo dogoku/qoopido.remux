@@ -2,8 +2,8 @@
 * Qoopido REMux: an REM and JS based approach to responsive web design
 *
 * Source:  Qoopido REMux
-* Version: 2.0.2
-* Date:    2013-03-08
+* Version: 2.0.3
+* Date:    2013-05-14
 * Author:  Dirk Lüth <info@qoopido.com>
 * Website: https://github.com/dlueth/qoopido.remux
 *
