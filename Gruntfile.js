@@ -3,7 +3,7 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		meta:{
-			banner:'/*!\n' +
+			general:'/*!\n' +
 				'* Qoopido REMux: an REM and JS based approach to responsive web design\n' +
 				'*\n' +
 				'* Source:  <%= pkg.title || pkg.name %>\n' +
@@ -22,7 +22,7 @@ module.exports = function (grunt) {
 			options: {
 				jshintrc: '.jshintrc'
 			},
-			dist:[
+			build:[
 				'Gruntfile.js',
 				'src/**/*.js'
 			]
@@ -31,49 +31,56 @@ module.exports = function (grunt) {
 			options: {
 				force: true
 			},
-			dist: ['min/**/*', 'packages/**/*']
+			build: ['dist/<%= pkg.version %>/**/*', 'packages/qoopido.remux.<%= pkg.version %>*']
 		},
 		concat:{
 			options:{
 				stripBanners: true,
-				banner: '<%= meta.banner %>'
+				banner: '<%= meta.general %>'
 			},
-			dist:{
+			build:{
 				src:[
 					'assets/vendor/qoopido.js/src/base.js',
 					'assets/vendor/qoopido.js/src/emitter.js',
 					'src/remux.js'
 				],
-				dest:'packages/qoopido.remux.js'
+				dest:'packages/qoopido.remux.<%= pkg.version %>.js'
 			}
 		},
 		uglify:{
 			options:{
 				preserveComments: 'some'
 			},
-			dist:{
+			build:{
 				files: {
-					'packages/qoopido.remux.min.js': ['packages/qoopido.remux.js']
+					'packages/qoopido.remux.<%= pkg.version %>.min.js': ['packages/qoopido.remux.<%= pkg.version %>.js']
 				}
 			}
 		},
-		uglifyrecursive: {
-			dist: {
+		copy: {
+			build: {
 				files: [
-					{ strip: 'src', src: ['src/**'], dest: 'min/'}
+					{src: ['src/**/*.js'], dest: 'dist/<%= pkg.version %>/'}
+				]
+			}
+		},
+		uglifyrecursive: {
+			build: {
+				files: [
+					{ strip: 'src', src: ['src/**/*.js'], dest: 'dist/<%= pkg.version %>/min/'}
 				]
 			}
 		},
 		compress:{
-			dist:{
+			build:{
 				options:{
-					archive:'packages/qoopido.remux.zip',
+					archive:'packages/qoopido.remux.<%= pkg.version %>.zip',
 					mode:'zip',
 					level:1,
 					pretty:true
 				},
 				files: [
-					{ src: ['packages/qoopido.remux*.js', 'assets/remux.less'] }
+					{ src: ['packages/qoopido.remux.<%= pkg.version %>*.js', 'assets/remux.less'] }
 				]
 			}
 		}
@@ -84,8 +91,9 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-uglifyrecursive');
 
-	grunt.registerTask('default', ['jshint', 'clean', 'concat', 'uglify', 'uglifyrecursive', 'compress']);
+	grunt.registerTask('default', ['jshint', 'clean', 'concat', 'uglify', 'copy', 'uglifyrecursive', 'compress']);
 };

@@ -3,7 +3,7 @@
 *
 * Source:  Qoopido REMux
 * Version: 2.0.3
-* Date:    2013-05-14
+* Date:    2013-06-07
 * Author:  Dirk Lüth <info@qoopido.com>
 * Website: https://github.com/dlueth/qoopido.remux
 *
@@ -16,15 +16,27 @@
 ;(function(definition, window, document, undefined) {
 	'use strict';
 
-	var namespace  = 'qoopido',
-		name       = 'base',
+	var namespace  = 'qoopido/base',
 		initialize = function initialize() {
-			[].push.apply(arguments, [ window, document, undefined ]);
-
-			window[namespace] = window[namespace] || { };
-
-			return (window[namespace][name] = definition.apply(null, arguments));
+			return window.qoopido.shared.prepareModule(namespace, definition, arguments);
 		};
+
+	window.qoopido                      = window.qoopido || {};
+	window.qoopido.shared               = window.qoopido.shared || {};
+	window.qoopido.shared.prepareModule = function prepareModule(namespace, definition, args, singleton) {
+		var id      = (namespace = namespace.split('/')).splice(namespace.length - 1, 1)[0],
+			pointer = window;
+
+		for(var i = 0; namespace[i] !== undefined; i++) {
+			pointer[namespace[i]] = pointer[namespace[i]] || {};
+
+			pointer = pointer[namespace[i]];
+		}
+
+		[].push.apply(args, [ window, document, undefined ]);
+
+		return (singleton === true) ? (pointer[id] = definition.apply(null, args).create()) : (pointer[id] = definition.apply(null, args));
+	};
 
 	if(typeof define === 'function' && define.amd) {
 		define(initialize);
@@ -110,28 +122,22 @@
 ;(function(definition, window, document, undefined) {
 	'use strict';
 
-	var namespace = 'qoopido',
-		name      = 'emitter';
-
-	function initialize() {
-		[].push.apply(arguments, [ window, document, undefined ]);
-
-		window[namespace] = window[namespace] || { };
-
-		return (window[namespace][name] = definition.apply(null, arguments));
-	}
+	var namespace  = 'qoopido/emitter',
+		initialize = function initialize() {
+			return window.qoopido.shared.prepareModule(namespace, definition, arguments);
+		};
 
 	if(typeof define === 'function' && define.amd) {
 		define([ './base' ], initialize);
 	} else {
-		initialize(window[namespace].base);
+		initialize(window.qoopido.base);
 	}
-}(function(mBase, window, document, undefined) {
+}(function(mPrototype, window, document, undefined) {
 	'use strict';
 
 	var excludeMethods = /^(_|extend$|create$|on$|one$|off$|emit$|get.+)/;
 
-	return mBase.extend({
+	return mPrototype.extend({
 		_mapped:   null,
 		_listener: null,
 		_constructor: function _constructor() {

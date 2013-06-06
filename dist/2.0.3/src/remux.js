@@ -13,17 +13,23 @@
 ;(function(definition, window, document, undefined) {
 	'use strict';
 
-	var namespace  = 'qoopido/remux',
-		initialize = function initialize() {
-			return window.qoopido.shared.prepareModule(namespace, definition, arguments, true);
-		};
+	var namespace = 'qoopido',
+		name      = 'remux';
+
+	function initialize() {
+		[].push.apply(arguments, [ window, document, undefined ]);
+
+		window[namespace] = window[namespace] || { };
+
+		return (window[namespace][name] = definition.apply(null, arguments).create());
+	}
 
 	if(typeof define === 'function' && define.amd) {
 		define([ './emitter' ], initialize);
 	} else {
-		initialize(window.qoopido.emitter);
+		initialize(window[namespace].emitter);
 	}
-}(function(mPrototype, window, document, undefined) {
+}(function(mEmitter, window, document, undefined) {
 	'use strict';
 
 	var prototype, style,
@@ -33,7 +39,7 @@
 		current     = { fontsize: null, layout: null },
 		delay       = null;
 
-	prototype = mPrototype.extend({
+	prototype = mEmitter.extend({
 		_constructor: function _constructor() {
 			var self          = this,
 				pBase         = parseInt(html.getAttribute('data-base'), 10),
