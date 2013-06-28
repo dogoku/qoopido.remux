@@ -31,7 +31,7 @@ module.exports = function (grunt) {
 			options: {
 				force: true
 			},
-			build: ['dist/<%= pkg.version %>/**/*', 'packages/qoopido.remux.<%= pkg.version %>*']
+			build: ['dist/<%= pkg.version %>/**', 'packages/qoopido.remux.<%= pkg.version %>*']
 		},
 		concat:{
 			options:{
