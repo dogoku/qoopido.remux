@@ -22,7 +22,7 @@
 	} else {
 		definition(window.qoopido.emitter);
 	}
-}(function(mPrototype, window, document, undefined) {
+}(function(mPrototype, namespace, window, document, undefined) {
 	'use strict';
 
 	var prototype, style,

@@ -13,42 +13,51 @@
 *  - http://www.opensource.org/licenses/mit-license.php
 *  - http://www.gnu.org/copyleft/gpl.html
 */
-;(function(definition, shim, window, document, undefined) {
+;(function(pDefinition, pShim, window, document, undefined) {
 	'use strict';
 
-	shim();
+	pShim();
 
-	var namespace  = 'qoopido/base',
-		initialize = function initialize() {
-			return window.qoopido.shared.prepareModule(namespace, definition, arguments);
+	var root       = 'qoopido',
+		definition = function definition() {
+			return initialize('base', pDefinition, arguments);
+		},
+		initialize = function initialize(pNamespace, pDefinition, pArgs, pSingleton) {
+			var namespace = pNamespace.split('/'),
+				id        = namespace[namespace.length - 1],
+				pointer   = window[root] = window[root] || {},
+				modules   = window[root].modules = window[root].modules || {};
+
+			for(var i = 0; namespace[i + 1] !== undefined; i++) {
+				pointer[namespace[i]] = pointer[namespace[i]] || {};
+
+				pointer = pointer[namespace[i]];
+			}
+
+			namespace = namespace.join('/');
+
+			[].push.apply(pArgs, [ namespace, window, document, undefined ]);
+
+			return (pSingleton === true) ? (pointer[id] = modules[namespace] = pDefinition.apply(null, pArgs).create()) : (pointer[id] = modules[namespace] = pDefinition.apply(null, pArgs));
 		};
 
-	window.qoopido                      = window.qoopido || {};
-	window.qoopido.modules              = window.qoopido.modules || {};
-	window.qoopido.shared               = window.qoopido.shared || {};
-	window.qoopido.shared.prepareModule = function prepareModule(pNamespace, pDefinition, pArgs, pSingleton) {
-		var id      = (namespace = pNamespace.split('/')).splice(namespace.length - 1, 1)[0],
-			pointer = window,
-			modules = window.qoopido.modules;
+	initialize('shared/module/initialize',
+		function(module, namespace) {
+			if(typeof define === 'function' && define.amd) {
+				define(namespace, module);
+			}
 
-		for(var i = 0; namespace[i] !== undefined; i++) {
-			pointer[namespace[i]] = pointer[namespace[i]] || {};
-
-			pointer = pointer[namespace[i]];
-		}
-
-		[].push.apply(pArgs, [ window, document, undefined ]);
-
-		return (pSingleton === true) ? (pointer[id] = modules[pNamespace] = pDefinition.apply(null, pArgs).create()) : (pointer[id] = modules[pNamespace] = pDefinition.apply(null, pArgs));
-	};
+			return module;
+		},
+		[initialize]);
 
 	if(typeof define === 'function' && define.amd) {
-		define(initialize);
+		define(definition);
 	} else {
-		initialize();
+		definition();
 	}
 }(
-	function(window, document, undefined) {
+	function(namespace, window, document, undefined) {
 		'use strict';
 
 		return {
@@ -71,58 +80,31 @@
 			}
 		};
 	},
-	function() {
+	function(undefined) {
 		'use strict';
 
-		var Empty                               = function Empty() {},
-			valueNull                           = null,
-			stringFunction                      = 'function',
-			stringObject                        = 'object',
-			stringUndefined                     = 'undefined',
-			pointerFunctionCall                 = Function.prototype.call,
-			pointerObjectPrototype              = Object.prototype,
-			supportsProto                       = (pointerObjectPrototype.__proto__ === valueNull),
-			helperOwns, helperCheckDefineProperty, helperCheckGetOwnPropertyDescriptor, supportsAccessors, helperDefineGetter, helperDefineSetter, helperLookupGetter, helperLookupSetter, fallbackDefineProperty, fallbackDefineProperties, fallbackGetOwnPropertyDescriptor;
+		var valueNull                       = null,
+			stringFunction                  = 'function',
+			stringObject                    = 'object',
+			stringUndefined                 = 'undefined',
+			stringHasOwnProperty            = 'hasOwnProperty',
+			stringProto                     = '__proto__',
+			stringPrototype                 = 'prototype',
+			stringDefineProperty            = 'defineProperty',
+			stringDefineProperties          = 'defineProperties',
+			stringGetOwnPropertyDescriptor  = 'getOwnPropertyDescriptor',
+			stringGetOwnPropertyDescriptors = 'getOwnPropertyDescriptors',
+			stringGetOwnPropertyNames       = 'getOwnPropertyNames',
+			pointerObjectPrototype          = Object[stringPrototype],
+			supportsProto                   = (pointerObjectPrototype[stringProto] === valueNull),
+			supportsAccessors               = pointerObjectPrototype[stringHasOwnProperty]('__defineGetter__'),
+			fallbackDefineProperty, fallbackDefineProperties, fallbackGetOwnPropertyDescriptor;
 
-		if(Function.prototype.bind === undefined) {
-			Function.prototype.bind = function bind(that) {
-				var target = this,
-					args   = [].slice.call(arguments, 1),
-					bound;
+		function Blueprint() {}
+		function checkDefineProperty(object) { try { Object[stringDefineProperty](object, 'sentinel', {}); return ('sentinel' in object); } catch (exception) {}}
+		function checkGetOwnPropertyDescriptor(object) { try { object.sentinel = 0; return (Object[stringGetOwnPropertyDescriptor](object, 'sentinel').value === 0); } catch (exception) {}}
 
-				if(typeof target !== stringFunction) {
-					throw new TypeError('Function.prototype.bind called on incompatible ' + target);
-				}
-
-				bound = function() {
-					if(this instanceof bound) {
-						var result = target.apply(this, args.concat([].slice.call(arguments, 0)));
-
-						if(Object(result) === result) {
-							return result;
-						}
-
-						return this;
-					} else {
-						return target.apply(that, args.concat([].slice.call(arguments, 0)));
-					}
-				};
-
-				if(target.prototype) {
-					Empty.prototype = target.prototype;
-					bound.prototype       = new Empty();
-					Empty.prototype = valueNull;
-				}
-
-				return bound;
-			};
-		}
-
-		helperOwns                          = pointerFunctionCall.bind(pointerObjectPrototype.hasOwnProperty);
-		helperCheckDefineProperty           = function helperCheckDefineProperty(object) { try { Object.defineProperty(object, 'sentinel', {}); return ('sentinel' in object); } catch (exception) {}};
-		helperCheckGetOwnPropertyDescriptor = function helperCheckGetOwnPropertyDescriptor(object) { try { object.sentinel = 0; return (Object.getOwnPropertyDescriptor(object, 'sentinel').value === 0); } catch (exception) {}};
-
-		if(Object.keys === undefined) {
+		if(!Object.keys) {
 			var buggy   = true,
 				exclude = [	'toString', 'toLocaleString', 'valueOf', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'constructor' ],
 				key;
@@ -140,7 +122,7 @@
 				}
 
 				for(name in object) {
-					if(helperOwns(object, name)) {
+					if(object[stringHasOwnProperty](name)) {
 						result.push(name);
 					}
 				}
@@ -149,7 +131,7 @@
 					var i;
 
 					for(i = 0; (name = exclude[i]) !== undefined; i++) {
-						if(helperOwns(object, name)) {
+						if(object[stringHasOwnProperty](name)) {
 							result.push(name);
 						}
 					}
@@ -159,28 +141,21 @@
 			};
 		}
 
-		if((supportsAccessors = helperOwns(pointerObjectPrototype, '__defineGetter__')) === true) {
-			helperDefineGetter = pointerFunctionCall.bind(pointerObjectPrototype.__defineGetter__);
-			helperDefineSetter = pointerFunctionCall.bind(pointerObjectPrototype.__defineSetter__);
-			helperLookupGetter = pointerFunctionCall.bind(pointerObjectPrototype.__lookupGetter__);
-			helperLookupSetter = pointerFunctionCall.bind(pointerObjectPrototype.__lookupSetter__);
-		}
-
-		if(Object.defineProperty) {
-			if(!(helperCheckDefineProperty({})) || !(typeof document === 'undefined' || helperCheckDefineProperty(document.createElement('div')))) {
-				fallbackDefineProperty   = Object.defineProperty;
-				fallbackDefineProperties = Object.defineProperties;
+		if(Object[stringDefineProperty]) {
+			if(!(checkDefineProperty({})) || !(typeof document === stringUndefined || checkDefineProperty(document.createElement('div')))) {
+				fallbackDefineProperty   = Object[stringDefineProperty];
+				fallbackDefineProperties = Object[stringDefineProperties];
 			}
 
-			if(!(helperCheckGetOwnPropertyDescriptor({})) || !(typeof document === 'undefined' || helperCheckGetOwnPropertyDescriptor(document.createElement('div')))) {
-				fallbackGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+			if(!(checkGetOwnPropertyDescriptor({})) || !(typeof document === stringUndefined || checkGetOwnPropertyDescriptor(document.createElement('div')))) {
+				fallbackGetOwnPropertyDescriptor = Object[stringGetOwnPropertyDescriptor];
 			}
 		}
 
-		if(Object.defineProperty === undefined || fallbackDefineProperty !== valueNull) {
-			Object.defineProperty = function defineProperty(object, property, descriptor) {
+		if(!Object[stringDefineProperty] || fallbackDefineProperty !== valueNull) {
+			Object[stringDefineProperty] = function defineProperty(object, property, descriptor) {
 				if((typeof object !== stringObject && typeof object !== stringFunction) || object === valueNull) {
-					throw new TypeError('Object.defineProperty called on non-object: ' + object);
+					throw new TypeError('Object[stringDefineProperty] called on non-object: ' + object);
 				}
 
 				if((typeof descriptor !== stringObject && typeof descriptor !== stringFunction) || descriptor === valueNull) {
@@ -193,17 +168,17 @@
 					} catch (exception) {}
 				}
 
-				if(helperOwns(descriptor, 'value')) {
-					if(supportsAccessors && (helperLookupGetter(object, property) || helperLookupSetter(object, property))) {
-						var prototype = object.__proto__;
+				if(descriptor[stringHasOwnProperty]('value')) {
+					if(supportsAccessors && (object.__lookupGetter__(property) || object.__lookupSetter__(property))) {
+						var prototype = object[stringProto];
 
-						object.__proto__ = pointerObjectPrototype;
+						object[stringProto] = pointerObjectPrototype;
 
 						delete object[property];
 
 						object[property] = descriptor.value;
 
-						object.__proto__ = prototype;
+						object[stringProto] = prototype;
 					} else {
 						object[property] = descriptor.value;
 					}
@@ -212,12 +187,12 @@
 						throw new TypeError('getters & setters can not be defined on this javascript engine');
 					}
 
-					if(helperOwns(descriptor, 'get')) {
-						helperDefineGetter(object, property, descriptor.get);
+					if(descriptor[stringHasOwnProperty]('get')) {
+						object.__defineGetter__(property, descriptor.get);
 					}
 
-					if(helperOwns(descriptor, 'set')) {
-						helperDefineSetter(object, property, descriptor.set);
+					if(descriptor[stringHasOwnProperty]('set')) {
+						object.__defineSetter__(property, descriptor.set);
 					}
 				}
 
@@ -225,8 +200,8 @@
 			};
 		}
 
-		if(Object.defineProperties === undefined || fallbackDefineProperties !== valueNull) {
-			Object.defineProperties = function defineProperties(object, properties) {
+		if(!Object[stringDefineProperties] || fallbackDefineProperties !== valueNull) {
+			Object[stringDefineProperties] = function defineProperties(object, properties) {
 				var property;
 
 				if(fallbackDefineProperties) {
@@ -236,8 +211,8 @@
 				}
 
 				for(property in properties) {
-					if(helperOwns(properties, property) && property !== '__proto__') {
-						Object.defineProperty(object, property, properties[property]);
+					if(properties[stringHasOwnProperty](property) && property !== '__proto__') {
+						Object[stringDefineProperty](object, property, properties[property]);
 					}
 				}
 
@@ -245,12 +220,12 @@
 			};
 		}
 
-		if(Object.getOwnPropertyDescriptor === undefined || fallbackGetOwnPropertyDescriptor !== valueNull) {
-			Object.getOwnPropertyDescriptor = function getOwnPropertyDescriptor(object, property) {
+		if(!Object[stringGetOwnPropertyDescriptor] || fallbackGetOwnPropertyDescriptor !== valueNull) {
+			Object[stringGetOwnPropertyDescriptor] = function getOwnPropertyDescriptor(object, property) {
 				var descriptor =  { enumerable: true, configurable: true };
 
 				if((typeof object !== stringObject && typeof object !== stringFunction) || object === valueNull) {
-					throw new TypeError('Object.getOwnPropertyDescriptor called on non-object: ' + object);
+					throw new TypeError('Object[stringGetOwnPropertyDescriptor] called on non-object: ' + object);
 				}
 
 				if(fallbackGetOwnPropertyDescriptor !== valueNull) {
@@ -259,20 +234,20 @@
 					} catch (exception) {}
 				}
 
-				if(!helperOwns(object, property)) {
+				if(!object[stringHasOwnProperty](property)) {
 					return;
 				}
 
 				if(supportsAccessors === true) {
-					var prototype = object.__proto__,
+					var prototype = object[stringProto],
 						getter, setter;
 
-					object.__proto__ = pointerObjectPrototype;
+					object[stringProto] = pointerObjectPrototype;
 
-					getter = helperLookupGetter(object, property);
-					setter = helperLookupSetter(object, property);
+					getter = object.__lookupGetter__(property);
+					setter = object.__lookupSetter__(property);
 
-					object.__proto__ = prototype;
+					object[stringProto] = prototype;
 
 					if(getter || setter) {
 						if(getter) {
@@ -294,27 +269,27 @@
 			};
 		}
 
-		if(Object.getOwnPropertyDescriptors === undefined) {
-			Object.getOwnPropertyDescriptors = function(object) {
+		if(!Object[stringGetOwnPropertyDescriptors]) {
+			Object[stringGetOwnPropertyDescriptors] = function(object) {
 				var descriptors = {},
-					propertiers = Object.getOwnPropertyNames(object),
+					propertiers = Object[stringGetOwnPropertyNames](object),
 					i, property;
 
 				for(i = 0; (property = propertiers[i]) !== undefined; i++) {
-					descriptors[property] = Object.getOwnPropertyDescriptor(object, property);
+					descriptors[property] = Object[stringGetOwnPropertyDescriptor](object, property);
 				}
 
 				return descriptors;
 			};
 		}
 
-		if(Object.getOwnPropertyNames === undefined) {
-			Object.getOwnPropertyNames = function getOwnPropertyNames(object) {
+		if(!Object[stringGetOwnPropertyNames]) {
+			Object[stringGetOwnPropertyNames] = function getOwnPropertyNames(object) {
 				return Object.keys(object);
 			};
 		}
 
-		if(Object.create === undefined) {
+		if(!Object.create) {
 			var createEmpty;
 
 			if(supportsProto || typeof document === stringUndefined) {
@@ -338,18 +313,18 @@
 					delete empty.toLocaleString;
 					delete empty.toString;
 					delete empty.valueOf;
-					empty.__proto__ = valueNull;
+					empty[stringProto] = valueNull;
 
 					parent.removeChild(iframe);
 					iframe = valueNull;
 
-					Empty.prototype = empty;
+					Blueprint[stringPrototype] = empty;
 
 					createEmpty = function () {
-						return new Empty();
+						return new Blueprint();
 					};
 
-					return new Empty();
+					return new Blueprint();
 				};
 			}
 
@@ -365,14 +340,14 @@
 						throw new TypeError('Object prototype may only be an Object or null');
 					}
 
-					Type.prototype = prototype;
+					Type[stringPrototype] = prototype;
 
 					object = new Type();
-					object.__proto__ = prototype;
+					object[stringProto] = prototype;
 				}
 
 				if(properties !== void 0) {
-					Object.defineProperties(object, properties);
+					Object[stringDefineProperties](object, properties);
 				}
 
 				return object;
@@ -381,20 +356,19 @@
 	},
 	window, document
 ));
-;(function(definition, window, document, undefined) {
+;(function(pDefinition, window) {
 	'use strict';
 
-	var namespace  = 'qoopido/emitter',
-		initialize = function initialize() {
-			return window.qoopido.shared.prepareModule(namespace, definition, arguments);
+	var definition = function definition() {
+			return window.qoopido.shared.module.initialize('emitter', pDefinition, arguments);
 		};
 
 	if(typeof define === 'function' && define.amd) {
-		define([ './base' ], initialize);
+		define([ './base' ], definition);
 	} else {
-		initialize(window.qoopido.base);
+		definition(window.qoopido.base);
 	}
-}(function(mPrototype, window, document, undefined) {
+}(function(mPrototype, namespace, window, document, undefined) {
 	'use strict';
 
 	var excludeMethods = /^(_|extend$|create$|on$|one$|off$|emit$|get.+)/;
@@ -491,7 +465,7 @@
 			return self;
 		}
 	});
-}, window, document));
+}, window));
 ;(function(pDefinition, window) {
 	'use strict';
 
@@ -504,7 +478,7 @@
 	} else {
 		definition(window.qoopido.emitter);
 	}
-}(function(mPrototype, window, document, undefined) {
+}(function(mPrototype, namespace, window, document, undefined) {
 	'use strict';
 
 	var prototype, style,
