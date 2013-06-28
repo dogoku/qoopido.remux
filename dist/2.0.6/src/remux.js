@@ -14,7 +14,7 @@
 	'use strict';
 
 	var definition = function definition() {
-		return window.qoopido.shared.module.initialize('remux', pDefinition, arguments);
+		return window.qoopido.shared.module.initialize('remux', pDefinition, arguments, true);
 	};
 
 	if(typeof define === 'function' && define.amd) {
