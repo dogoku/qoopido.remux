@@ -1,0 +1,12 @@
+{
+  "name": "qoopido.remux",
+  "version": "2.0.7",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "qoopido.js": "latest"
+  }
+}

@@ -1,29 +1,31 @@
-/*
- * Qoopido remux class to build responsive layouts fully based on rem
- *
- * Copyright (c) 2012 Dirk Lüth
- *
- * Dual licensed under the MIT and GPL licenses.
- *  - http://www.opensource.org/licenses/mit-license.php
- *  - http://www.gnu.org/copyleft/gpl.html
- *
- * @author Dirk Lüth <info@qoopido.com>
- * @require ./emitter
- */
-;(function(definition, window, document, undefined) {
+/*!
+* Qoopido REMux: an REM and JS based approach to responsive web design
+*
+* Source:  Qoopido REMux
+* Version: 2.0.7
+* Date:    2013-06-30
+* Author:  Dirk Lüth <info@qoopido.com>
+* Website: https://github.com/dlueth/qoopido.remux
+*
+* Copyright (c) 2013 Dirk Lüth
+*
+* Licensed under the MIT and GPL license.
+*  - http://www.opensource.org/licenses/mit-license.php
+*  - http://www.gnu.org/copyleft/gpl.html
+*/
+;(function(pDefinition, window) {
 	'use strict';
 
-	var namespace  = 'qoopido/remux',
-		initialize = function initialize() {
-			return window.qoopido.shared.prepareModule(namespace, definition, arguments, true);
-		};
+	var definition = function definition() {
+		return window.qoopido.shared.module.initialize('remux', pDefinition, arguments, true);
+	};
 
 	if(typeof define === 'function' && define.amd) {
-		define([ './emitter' ], initialize);
+		define([ './emitter' ], definition);
 	} else {
-		initialize(window.qoopido.emitter);
+		definition(window.qoopido.emitter);
 	}
-}(function(mPrototype, window, document, undefined) {
+}(function(mPrototype, namespace, window, document, undefined) {
 	'use strict';
 
 	var prototype, style,
@@ -118,4 +120,4 @@
 	});
 
 	return prototype;
-}, window, document));
+}, window));
